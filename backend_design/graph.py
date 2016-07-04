@@ -3,27 +3,9 @@ import inspect
 from backend_design.utils import classproperty
 
 
-class _NodeMetaclass(type):
-
-    def __str__(self):
-        return self.key
-
-
-class _Node(object):
-    __metaclass__ = _NodeMetaclass
+class GraphComponent(object):
     _private_attribute_names = set()
-
-    def __init__(self, *args, **kwargs):
-        raise TypeError("Node subclasses serve as singletons and "
-                        "can not be instantiated.")
-
-    @classproperty
-    def label(cls):
-        return cls.__name__
-
-    @classproperty
-    def key(cls):
-        return cls.label
+    _dynamic_properties_to_include_in_attributes = set()
 
     @classmethod
     def get_attributes(cls):
@@ -36,7 +18,7 @@ class _Node(object):
             })
         attrs.update({
             property_name: getattr(cls, property_name)
-            for property_name in ['label']
+            for property_name in cls._dynamic_properties_to_include_in_attributes
         })
         return attrs
 
@@ -50,6 +32,30 @@ class _Node(object):
             return False
         else:
             return True
+
+
+class _NodeMetaclass(type):
+
+    def __str__(self):
+        return self.key
+
+
+class _Node(GraphComponent):
+    __metaclass__ = _NodeMetaclass
+
+    _dynamic_properties_to_include_in_attributes = set()
+
+    def __init__(self, *args, **kwargs):
+        raise TypeError("Node subclasses serve as singletons and "
+                        "can not be instantiated.")
+
+    @classproperty
+    def label(cls):
+        return cls.__name__
+
+    @classproperty
+    def key(cls):
+        return cls.label
 
     @classmethod
     def add_to_graph(cls, graph):
@@ -77,3 +83,17 @@ class Transition(_Node):
 
         graph.add_edge(cls.from_state, cls)
         graph.add_edge(cls, cls.to_state)
+
+
+class Cluster(GraphComponent):
+    nodes = []
+
+    _private_attribute_names = ['nodes', 'name']
+
+    @classproperty
+    def name(cls):
+        return 'cluster_' + cls.__name__
+
+    @classmethod
+    def add_to_graph(cls, graph):
+        graph.add_subgraph(cls.nodes, name=cls.name, **cls.get_attributes())
