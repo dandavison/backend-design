@@ -59,12 +59,13 @@ class _Node(object):
 
 
 class State(_Node):
-    pass
+    shape = 'oval'
 
 
 class Event(_Node):
     from_state = None
     to_state = None
+    shape = 'rectangle'
 
     _private_attribute_names = {'from_state', 'to_state'}
 
