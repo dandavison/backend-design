@@ -70,10 +70,6 @@ class Event(_Node):
     _private_attribute_names = {'from_state', 'to_state'}
 
     @classmethod
-    def get_edge_data(cls):
-        return cls.from_state, cls.to_state, cls.key
-
-    @classmethod
     def add_to_graph(cls, graph):
         cls.from_state.add_to_graph(graph)
         super(Event, cls).add_to_graph(graph)
