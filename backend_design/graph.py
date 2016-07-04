@@ -64,6 +64,24 @@ class _Node(GraphComponent):
         pgv_node.attr.update(cls.get_attributes())
 
 
+class Service(_Node):
+    shape = 'rectangle'
+    inputs = []
+    outputs = []
+
+    _private_attribute_names = {'inputs', 'outputs'}
+
+    @classmethod
+    def add_to_graph(cls, graph):
+        super(Service, cls).add_to_graph(graph)
+
+        for node in cls.inputs:
+            graph.add_edge(node, cls)
+
+        for node in cls.outputs:
+            graph.add_edge(cls, node)
+
+
 class State(_Node):
     shape = 'oval'
 
