@@ -27,13 +27,16 @@ class _Node(object):
 
     @classmethod
     def get_attributes(cls):
-        attrs = {
-            'label': cls.label,
-        }
+        attrs = {}
+        for ancestral_cls in reversed(cls.mro()):
+            attrs.update({
+                key: value
+                for key, value in vars(ancestral_cls).iteritems()
+                if cls.is_public_data_attribute(key, value)
+            })
         attrs.update({
-            key: value
-            for key, value in vars(cls).iteritems()
-            if cls.is_public_data_attribute(key, value)
+            property_name: getattr(cls, property_name)
+            for property_name in ['label']
         })
         return attrs
 
