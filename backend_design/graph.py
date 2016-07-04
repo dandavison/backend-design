@@ -77,12 +77,15 @@ class Transition(_Node):
 
     @classmethod
     def add_to_graph(cls, graph):
-        cls.from_state.add_to_graph(graph)
         super(Transition, cls).add_to_graph(graph)
-        cls.to_state.add_to_graph(graph)
 
-        graph.add_edge(cls.from_state, cls)
-        graph.add_edge(cls, cls.to_state)
+        if cls.from_state:
+            cls.from_state.add_to_graph(graph)
+            graph.add_edge(cls.from_state, cls)
+
+        if cls.to_state:
+            cls.to_state.add_to_graph(graph)
+            graph.add_edge(cls, cls.to_state)
 
 
 class Cluster(GraphComponent):
