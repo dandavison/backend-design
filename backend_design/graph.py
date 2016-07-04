@@ -62,7 +62,7 @@ class State(_Node):
     shape = 'oval'
 
 
-class Event(_Node):
+class Transition(_Node):
     from_state = None
     to_state = None
     shape = 'rectangle'
@@ -72,7 +72,7 @@ class Event(_Node):
     @classmethod
     def add_to_graph(cls, graph):
         cls.from_state.add_to_graph(graph)
-        super(Event, cls).add_to_graph(graph)
+        super(Transition, cls).add_to_graph(graph)
         cls.to_state.add_to_graph(graph)
 
         graph.add_edge(cls.from_state, cls)

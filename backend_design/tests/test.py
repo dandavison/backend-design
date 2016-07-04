@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import pygraphviz as pgv
 
-from backend_design.graph import Event
+from backend_design.graph import Transition
 from backend_design.graph import State
 
 
@@ -15,7 +15,7 @@ class StateB(State):
     pass
 
 
-class EventA(Event):
+class TransitionA(Transition):
     from_state = StateA
     to_state = StateB
 
@@ -24,7 +24,7 @@ class TestDot(TestCase):
 
     def test_dot(self):
         graph = pgv.AGraph(directed=True)
-        EventA.add_to_graph(graph)
+        TransitionA.add_to_graph(graph)
 
         dot_file = NamedTemporaryFile()
         dot_file.write(graph.string())
@@ -32,6 +32,7 @@ class TestDot(TestCase):
 
         graph_from_dot = pgv.AGraph(dot_file.name)
         self.assertEqual(graph_from_dot.nodes(),
-                         ['StateA', 'EventA', 'StateB'])
+                         ['StateA', 'TransitionA', 'StateB'])
         self.assertEqual(graph_from_dot.edges(),
-                         [('StateA', 'EventA'), ('EventA', 'StateB')])
+                         [('StateA', 'TransitionA'),
+                          ('TransitionA', 'StateB')])
