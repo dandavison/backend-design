@@ -3,7 +3,14 @@ import inspect
 from backend_design.utils import classproperty
 
 
+class _NodeMetaclass(type):
+
+    def __str__(self):
+        return self.key
+
+
 class _Node(object):
+    __metaclass__ = _NodeMetaclass
     _private_attribute_names = set()
 
     def __init__(self, *args, **kwargs):
