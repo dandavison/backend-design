@@ -1,4 +1,4 @@
-design.dot: backend_design/design.py
+design.dot: backend_design/*
 	python backend_design/design.py > design.dot
 
 
